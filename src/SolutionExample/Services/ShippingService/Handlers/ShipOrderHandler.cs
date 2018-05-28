@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ShippingService.Handlers
 {
-    public class ShipOrderHandler : IHandle<ShipOrder>
+    public class ShipOrderHandler : IHandleMessage<ShipOrder>
     {
 
         IShippingRepository rep;

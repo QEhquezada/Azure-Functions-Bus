@@ -15,9 +15,11 @@ namespace AFBus
 
         public Type SagaType { get; set; }
 
-        public List<MessageToMethod> MessagesThatAreCorrelatedByTheSaga { get; set; }
+        public List<MessageToMethod> CommandsThatActivateTheSaga { get; set; }
 
-        public List<MessageToMethod> MessagesThatActivateTheSaga { get; set; }
+        public List<MessageToMethod> CommandsThatAreCorrelatedToTheSaga { get; set; }
+               
+        public List<MessageToMethod> EventsThatAreCorrelatedToTheSaga { get; set; }
     }
 
     class MessageToMethod

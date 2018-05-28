@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AFBus.Tests.TestClasses
 {
-    public class SingletonTestSaga : Saga<SingletonTestSagaData>, IHandleStartingSaga<SingletonSagaStartingMessage>, IHandleWithCorrelation<SingletonSagaStartingMessage>
+    public class SingletonTestSaga : Saga<SingletonTestSagaData>, IHandleStartingSaga<SingletonSagaStartingMessage>, IHandleCommandWithCorrelation<SingletonSagaStartingMessage>
     {
         private const string PARTITION_KEY = "SingletonTestSaga";
 
@@ -21,13 +21,13 @@ namespace AFBus.Tests.TestClasses
             return Task.CompletedTask;
         }
 
-        Task IHandleWithCorrelation<SingletonSagaStartingMessage>.HandleAsync(IBus bus, SingletonSagaStartingMessage message, TraceWriter Log)
+        Task IHandleCommandWithCorrelation<SingletonSagaStartingMessage>.HandleAsync(IBus bus, SingletonSagaStartingMessage message, TraceWriter Log)
         {
 
             return Task.CompletedTask;
         }
 
-        async Task<SagaData> IHandleWithCorrelation<SingletonSagaStartingMessage>.LookForInstance(SingletonSagaStartingMessage message)
+        async Task<SagaData> IHandleCommandWithCorrelation<SingletonSagaStartingMessage>.LookForInstance(SingletonSagaStartingMessage message)
         {
             var sagaData = await SagaPersistence.GetSagaData<SingletonTestSagaData>(PARTITION_KEY, message.Id.ToString());
 

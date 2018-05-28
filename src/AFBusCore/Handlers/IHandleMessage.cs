@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace AFBus
 {
 
-    public interface IHandle<MessageType> 
+    public interface IHandleMessage<MessageType> 
     {
         /// <summary>
         /// Handles a message in a stateless way.

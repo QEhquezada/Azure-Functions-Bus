@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,6 +15,8 @@ namespace AFBus
         Task CreateSagaPersistenceTable();
 
         Task<T> GetSagaData<T>(string partitionKey, string rowKey) where T : SagaData;
+
+       // Task<IQueryable<T>> Find<T>(Expression<Func<T, bool>> expression) where T : SagaData;
 
         Task Insert(SagaData entity);
 

@@ -8,7 +8,7 @@ using Microsoft.Azure.WebJobs.Host;
 
 namespace AFBus.Tests.TestClasses
 {
-    public class TestMessageHandler : IHandle<TestMessage>
+    public class TestMessageHandler : IHandleMessage<TestMessage>
     {       
 
         public Task HandleAsync(IBus bus,TestMessage input, TraceWriter Log)

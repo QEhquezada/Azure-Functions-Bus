@@ -52,7 +52,7 @@ namespace AFBus.Tests
             var lockSaga = false;
             var sagaPersistence = new SagaAzureStoragePersistence(new SagaAzureStorageLocker(), lockSaga);
 
-            var sagaData = sagaPersistence.GetSagaData<SimpleTestSagaData>("SimpleTestSaga", sagaId.ToString()).Result as SimpleTestSagaData;
+            var sagaData = sagaPersistence.GetSagaData<EventTestSagaData>("SimpleTestSaga", sagaId.ToString()).Result as EventTestSagaData;
 
             Assert.IsTrue(sagaData.Counter == 11);
 
@@ -92,7 +92,7 @@ namespace AFBus.Tests
             var lockSaga = false;
             var sagaPersistence = new SagaAzureStoragePersistence(new SagaAzureStorageLocker(), lockSaga);
 
-            var sagaData = sagaPersistence.GetSagaData<SimpleTestSagaData>("SimpleTestSaga", sagaId.ToString()).Result as SimpleTestSagaData;
+            var sagaData = sagaPersistence.GetSagaData<EventTestSagaData>("SimpleTestSaga", sagaId.ToString()).Result as EventTestSagaData;
 
             Assert.IsTrue(sagaData.Counter == 11);
 
@@ -121,5 +121,28 @@ namespace AFBus.Tests
 
             Assert.IsTrue(sagaData.Counter == 1);
         }
+
+
+        [TestMethod]
+        public void Sagas_Can_Receive_An_Event()
+        {
+            var sagaId = Guid.NewGuid();
+
+            var container = new HandlersContainer(true);
+
+            Assert.IsTrue(container.messageToSagaDictionary[typeof(EventSagaStartingMessage)].Count == 1);
+
+            container.HandleAsync(new EventSagaStartingMessage() { Id = sagaId }, null).Wait();
+
+            container.HandleAsync(new EventSagaStartingMessage() { Id = sagaId }, null).Wait();
+
+            var lockSaga = false;
+            var sagaPersistence = new SagaAzureStoragePersistence(new SagaAzureStorageLocker(), lockSaga);
+
+            var sagaData = sagaPersistence.GetSagaData<SingletonTestSagaData>("SingletonTestSaga", sagaId.ToString()).Result as SingletonTestSagaData;
+
+            Assert.IsTrue(sagaData.Counter == 1);
+        }
+
     }
 }

@@ -125,10 +125,10 @@ namespace AFBus
 
                 sagaInfo.SagaType = s;
 
-                //messages with correlation
-                var interfacesWithCorrelation = s.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleWithCorrelation<>));
-                var messageTypes = interfacesWithCorrelation.Select(i => i.GetGenericArguments()[0]).ToList();                
-                sagaInfo.MessagesThatAreCorrelatedByTheSaga = interfacesWithCorrelation.
+                //commands with correlation
+                var commandInterfacesWithCorrelation = s.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleCommandWithCorrelation<>));
+                var messageTypes = commandInterfacesWithCorrelation.Select(i => i.GetGenericArguments()[0]).ToList();                
+                sagaInfo.CommandsThatAreCorrelatedToTheSaga = commandInterfacesWithCorrelation.
                                                                     Select(
                                                                            i => new MessageToMethod()
                                                                            {
@@ -140,7 +140,7 @@ namespace AFBus
                 //messages starting sagas
                 var interfacesStartingSagas = s.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleStartingSaga<>));
                 var startingMessageTypes = interfacesStartingSagas.Select(i => i.GetGenericArguments()[0]);
-                sagaInfo.MessagesThatActivateTheSaga = interfacesStartingSagas.
+                sagaInfo.CommandsThatActivateTheSaga = interfacesStartingSagas.
                                                                     Select(
                                                                            i => new MessageToMethod()
                                                                            {
@@ -149,9 +149,25 @@ namespace AFBus
                                                                                CorrelatingMethod = null
                                                                            }).ToList();
 
+                //events with correlation
+                var eventInterfacesWithCorrelation = s.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleEventWithCorrelation<>));
+                var eventMessageTypes = eventInterfacesWithCorrelation.Select(i => i.GetGenericArguments()[0]).ToList();
+                sagaInfo.EventsThatAreCorrelatedToTheSaga = eventInterfacesWithCorrelation.
+                                                                    Select(
+                                                                           i => new MessageToMethod()
+                                                                           {
+                                                                               Message = i.GetGenericArguments()[0],
+                                                                               HandlingMethod = i.GetMethods()[0],
+                                                                               CorrelatingMethod = i.GetMethods()[1]
+                                                                           }).ToList();
+
+
+
+
                 messageTypes.AddRange(startingMessageTypes);
-                
-                foreach(var messageType in messageTypes.Distinct())
+                messageTypes.AddRange(eventMessageTypes);
+
+                foreach (var messageType in messageTypes.Distinct())
                 {
                     if (!messageToSagaDictionary.ContainsKey(messageType))
                     {
@@ -176,7 +192,7 @@ namespace AFBus
 
         private void LookForHandlers(IEnumerable<Type> types)
         {
-            var ifunctionTypes = types.Where(x => x.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandle<>)));
+            var ifunctionTypes = types.Where(x => x.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IHandleMessage<>)));
 
 
             foreach (var t in ifunctionTypes)
@@ -298,7 +314,7 @@ namespace AFBus
                 var saga = CreateInstance(sagaInfo.SagaType);//Activator.CreateInstance(sagaInfo.SagaType);
                 dynamic sagaDynamic = saga;
 
-                var sagaMessageToMethod = sagaInfo.MessagesThatAreCorrelatedByTheSaga.FirstOrDefault(m => m.Message == message.GetType());
+                var sagaMessageToMethod = sagaInfo.CommandsThatAreCorrelatedToTheSaga.FirstOrDefault(m => m.Message == message.GetType());
 
                 //try to load saga from repository
                 if (sagaMessageToMethod!=null)
@@ -328,7 +344,7 @@ namespace AFBus
                 }
 
 
-                sagaMessageToMethod = sagaInfo.MessagesThatActivateTheSaga.FirstOrDefault(m => m.Message == message.GetType());
+                sagaMessageToMethod = sagaInfo.CommandsThatActivateTheSaga.FirstOrDefault(m => m.Message == message.GetType());
                 //if not => create
                 if (!instantiated && sagaMessageToMethod!=null)
                 {

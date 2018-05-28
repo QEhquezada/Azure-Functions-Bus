@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace UIExample.Handlers
 {
-    public class OrderFinishedHandler : IHandle<OrderFinished>
+    public class OrderFinishedHandler : IHandleMessage<OrderFinished>
     {
         IHubContext<Events> hub;
 

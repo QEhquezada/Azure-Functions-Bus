@@ -34,6 +34,8 @@ namespace AFBus.Tests
             Assert.IsTrue(InvocationCounter.Instance.Counter == 2);
         }
 
+
+
         [TestMethod]
         [ExpectedException(typeof(AggregateException))]
         public void HandlersContainer_HandlerNotFoundForThisMessage()

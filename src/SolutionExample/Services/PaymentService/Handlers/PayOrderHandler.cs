@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PaymentService.Handlers
 {
-    public class PayOrderHandler : IHandle<PayOrder>
+    public class PayOrderHandler : IHandleMessage<PayOrder>
     {
         IPaymentsRepository repository;
 

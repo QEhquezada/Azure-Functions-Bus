@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace OrderSaga.Sagas
 {
-    public class OrderSaga : Saga<OrderSagaData>, IHandleStartingSaga<CartItemAdded>, IHandleWithCorrelation<CartItemAdded>, IHandleWithCorrelation<ProcessOrder>, IHandleWithCorrelation<ShipOrderResponse>, IHandleWithCorrelation<PayOrderResponse>
+    public class OrderSaga : Saga<OrderSagaData>, IHandleStartingSaga<CartItemAdded>, IHandleCommandWithCorrelation<CartItemAdded>, IHandleCommandWithCorrelation<ProcessOrder>, IHandleCommandWithCorrelation<ShipOrderResponse>, IHandleCommandWithCorrelation<PayOrderResponse>
     {
         const string PARTITION_KEY = "OrderSaga";
         const string SERVICE_NAME = "ordersaga";

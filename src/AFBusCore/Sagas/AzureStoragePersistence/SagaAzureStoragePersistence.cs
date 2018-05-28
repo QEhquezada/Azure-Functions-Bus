@@ -3,6 +3,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -157,5 +158,26 @@ namespace AFBus
                 await sagaLock.DeleteLock(sagaID, entity.LockID);
             }*/
         }
+
+        /*public Task<IQueryable<T>> Find<T>(TableQuery<T> filter) where T : SagaData
+        {
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+            CloudTable table = tableClient.GetTableReference(TABLE_NAME);
+
+                
+            // Loop through the results, displaying information about the entity.
+            foreach (CustomerEntity entity in await table.exe(.ExecuteQuerySegmentedAsync<T>(filter))
+            {
+                Console.WriteLine("{0}, {1}\t{2}\t{3}", entity.PartitionKey, entity.RowKey,
+                    entity.Email, entity.PhoneNumber);
+            }
+
+            table.ExecuteQuerySegmentedAsync<T>()
+
+
+            return table.CreateQuery<T>().AsQueryable().Where(expression);
+            
+        }*/
     }
 }

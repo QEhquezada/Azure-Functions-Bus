@@ -53,7 +53,7 @@ namespace AFBus.Tests
             var lockSaga = false;
             var sagaPersistence = new SagaAzureStoragePersistence(new SagaAzureStorageLocker(), lockSaga);
 
-            var sagaData = sagaPersistence.GetSagaData<SimpleTestSagaData>("SimpleTestSaga", sagaId.ToString()).Result as SimpleTestSagaData;
+            var sagaData = sagaPersistence.GetSagaData<EventTestSagaData>("SimpleTestSaga", sagaId.ToString()).Result as EventTestSagaData;
 
             Assert.IsTrue(sagaData.Counter == 11);
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AFBus.Tests.TestClasses
 {
-    public class SimpleTestSaga : Saga<EventTestSagaData>, IHandleStartingSaga<SimpleSagaStartingMessage>,  IHandleCommandWithCorrelation<SimpleSagaIntermediateMessage>, IHandleCommandWithCorrelation<SimpleSagaTerminatingMessage>
+    public class EventTestSaga : Saga<EventTestSagaData>, IHandleStartingSaga<EventSagaStartingMessage>,  IHandleCommandWithCorrelation<EventSagaIntermediateMessage>, IHandleEventWithCorrelation<EventMessage>
     {
         private const string PARTITION_KEY = "SimpleTestSaga";
 
@@ -23,7 +23,7 @@ namespace AFBus.Tests.TestClasses
             return Task.CompletedTask;
         }
 
-        public Task HandleAsync(IBus bus, SimpleSagaIntermediateMessage input, TraceWriter Log)
+        public Task HandleAsync(IBus bus, EventSagaIntermediateMessage input, TraceWriter Log)
         {
             this.Data.Counter++;
 
@@ -32,23 +32,23 @@ namespace AFBus.Tests.TestClasses
             return Task.CompletedTask;
         }
 
-        public async Task HandleAsync(IBus bus, SimpleSagaTerminatingMessage message, TraceWriter Log)
+        public Task HandleEventAsync(IBus bus, EventMessage message, TraceWriter log)
         {
-            await this.DeleteSaga();
+            this.Data.EventReceived = true;
+
+            return Task.CompletedTask;
         }
 
-        public async Task<SagaData> LookForInstance(SimpleSagaIntermediateMessage message)
+        public async Task<SagaData> LookForInstance(EventSagaIntermediateMessage message)
         {
             var sagaData =  await SagaPersistence.GetSagaData<EventTestSagaData>(PARTITION_KEY, message.Id.ToString());
 
             return sagaData;
         }
 
-        public async Task<SagaData> LookForInstance(SimpleSagaTerminatingMessage message)
+        public Task<List<SagaData>> LookForInstances(EventMessage message)
         {
-            var sagaData = await SagaPersistence.GetSagaData<EventTestSagaData>(PARTITION_KEY, message.Id.ToString());
-
-            return sagaData;
+            
         }
     }
 }

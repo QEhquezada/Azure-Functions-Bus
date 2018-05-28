@@ -7,7 +7,7 @@ using Microsoft.Azure.WebJobs.Host;
 
 namespace AFBus.Tests.TestClasses.DI
 {
-    public class DIMessageHandler : IHandle<DIMessage>
+    public class DIMessageHandler : IHandleMessage<DIMessage>
     {
         public DIMessageHandler(IUoWTest uow)
         {
